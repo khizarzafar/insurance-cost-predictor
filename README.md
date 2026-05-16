@@ -132,6 +132,6 @@ This project is licensed under the [MIT License](LICENSE).
 
 ## 👤 Author
 
-**Your Name**
-- GitHub: [@your_username](https://github.com/your_username)
-- LinkedIn: [your_linkedin](https://linkedin.com/in/your_linkedin)
+**Khizar Hayat Zafar**
+- GitHub: https://github.com/khizarzafar
+- LinkedIn: www.linkedin.com/in/khizar-hayyat-zafar-b46907286
