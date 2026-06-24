@@ -1,129 +1,114 @@
-# insurance-cost-predictor
-A machine learning model to predict individual medical insurance charges based on personal attributes such as age, sex, BMI, region, and number of dependents.
-# 🏥 Insurance Cost Predictor
+# Insurance Charges Prediction — EDA & Linear Regression
 
-A machine learning project to predict individual medical insurance charges based on personal attributes such as age, sex, BMI, region, and number of dependents.
+A machine learning project that analyzes an insurance dataset to understand what factors drive medical charges, and builds a regression model to predict them.
 
 ---
 
-## 📌 Problem Statement
+## What This Project Does
 
-Medical insurance costs vary significantly across individuals. This project builds a predictive model that estimates annual insurance charges for a person based on demographic and health-related features. Accurate cost prediction can assist insurance companies, healthcare planners, and individuals in making informed financial decisions.
+The notebook walks through the full pipeline — from raw data to a working prediction model:
 
----
-
-## 📊 Dataset
-
-**Source:** [Medical Cost Personal Dataset — Kaggle](https://www.kaggle.com/datasets/mirichoi0218/insurance)
-
-| Feature    | Type        | Description                              |
-|------------|-------------|------------------------------------------|
-| `age`      | Numerical   | Age of the primary beneficiary           |
-| `sex`      | Categorical | Gender of the policyholder (male/female) |
-| `bmi`      | Numerical   | Body Mass Index                          |
-| `children` | Numerical   | Number of dependents covered             |
-| `smoker`   | Categorical | Whether the policyholder smokes          |
-| `region`   | Categorical | Residential region in the US             |
-| `charges`  | Numerical   | 🎯 Target — Annual medical insurance cost |
+- Exploratory data analysis to understand the data and spot patterns
+- Data cleaning and preprocessing (encoding, deduplication, type fixes)
+- Feature engineering (BMI categories, one-hot encoding)
+- Feature selection using Pearson Correlation and Chi-Square tests
+- Training a Linear Regression model and evaluating it with R² and Adjusted R²
 
 ---
 
-## 🎯 Objective
+## Dataset
 
-- Perform Exploratory Data Analysis (EDA) to uncover patterns
-- Preprocess and encode features for model training
-- Train and evaluate multiple regression models
-- Identify the best-performing model for deployment
+**File:** `insurance.csv`
 
----
-
-## 🧪 Models Used
-
-- Linear Regression
-- Ridge / Lasso Regression
-- Decision Tree Regressor
-- Random Forest Regressor
-- Gradient Boosting (XGBoost / LightGBM)
+| Column | Description |
+|--------|-------------|
+| `age` | Age of the insured person |
+| `sex` | Gender (male / female) |
+| `bmi` | Body Mass Index |
+| `children` | Number of dependents |
+| `smoker` | Whether the person smokes (yes / no) |
+| `region` | Residential region in the US |
+| `charges` | Medical insurance charges (target variable) |
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 ```
-insurance-cost-predictor/
-│
-├── data/
-│   ├── raw/                  # Original dataset (do not modify)
-│   └── processed/            # Cleaned & encoded data
-│
-├── notebooks/
-│   ├── 01_eda.ipynb          # Exploratory Data Analysis
-│   ├── 02_preprocessing.ipynb
-│   └── 03_modeling.ipynb
-│
-├── src/
-│   ├── preprocess.py         # Data cleaning & feature engineering
-│   ├── train.py              # Model training pipeline
-│   └── evaluate.py           # Metrics & evaluation
-│
-├── models/
-│   └── best_model.pkl        # Saved trained model
-│
-├── requirements.txt
-├── .gitignore
+├── EDA.ipynb          # Main notebook
+├── insurance.csv      # Dataset
 └── README.md
 ```
 
 ---
 
-## ⚙️ Setup & Installation
+## Steps Covered in the Notebook
 
-### 1. Clone the repository
+**1. EDA**
+- Checked shape, data types, null values
+- Plotted distributions for age, bmi, children, charges
+- Visualized categorical columns (sex, smoker)
+- Correlation heatmap
+
+**2. Data Cleaning**
+- Removed duplicate rows
+- Encoded `sex` → `is_female` (0/1)
+- Encoded `smoker` → `is_smoker` (0/1)
+- One-hot encoded `region` (dropped first to avoid multicollinearity)
+
+**3. Feature Engineering**
+- Created `bmi_category` from BMI values (underweight / normal / overweight / obese)
+- One-hot encoded `bmi_category`
+- Standardized numeric features: `age`, `bmi`, `children`
+
+**4. Feature Selection**
+- Pearson Correlation for numeric features vs charges
+- Chi-Square test for categorical features vs binned charges
+- Final features selected: `age`, `is_female`, `bmi`, `children`, `is_smoker`, `region_southeast`, `bmi_category_obese`
+
+**5. Model Training**
+- 80/20 train-test split
+- Linear Regression from scikit-learn
+- Evaluated using R² and Adjusted R²
+
+---
+
+## How to Run
+
+1. Clone the repo and make sure `insurance.csv` is in the same folder as the notebook
+
+2. Install dependencies:
 ```bash
-git clone https://github.com/YOUR_USERNAME/insurance-cost-predictor.git
-cd insurance-cost-predictor
+pip install pandas numpy matplotlib seaborn scikit-learn scipy
 ```
 
-### 2. Create a virtual environment
+3. Open and run the notebook:
 ```bash
-python -m venv venv
-source venv/bin/activate        # On Windows: venv\Scripts\activate
-```
-
-### 3. Install dependencies
-```bash
-pip install -r requirements.txt
+jupyter notebook EDA.ipynb
 ```
 
 ---
 
-## 📈 Evaluation Metrics
+## Results
 
-| Metric | Description |
-|--------|-------------|
-| R²     | Coefficient of Determination |
+The model was evaluated on the held-out test set (20% of data) using:
 
----
-
-## 🔍 Key Findings *(to be updated after EDA)*
-
-- [ ] Distribution of insurance charges
-- [ ] Impact of smoking on charges
-- [ ] Correlation between BMI and charges
-- [ ] Regional cost variations
+- **R² Score** — measures how much variance in charges the model explains
+- **Adjusted R²** — penalizes for adding unhelpful features, more reliable than plain R²
 
 ---
 
-## 🚀 Future Improvements
+## Libraries Used
 
-- Deploy model as a REST API using Flask or FastAPI
-- Build a simple frontend for user input and cost prediction
-- Experiment with Neural Networks for improved accuracy
+- `pandas`, `numpy` — data manipulation
+- `matplotlib`, `seaborn` — visualization
+- `scikit-learn` — preprocessing, model training, evaluation
+- `scipy` — statistical tests (Pearson, Chi-Square)
 
+---
 
+## Notes
 
-## 👤 Author
-
-**Khizar Hayat Zafar**
-- GitHub: https://github.com/khizarzafar
-- LinkedIn: www.linkedin.com/in/khizar-hayyat-zafar-b46907286
+- The `charges` column was binned into quartiles only for the Chi-Square test and is not used as a feature in the model
+- `StandardScaler` was fit only on training data to avoid data leakage
+- `drop_first=True` was used in all one-hot encoding to avoid the dummy variable trap
