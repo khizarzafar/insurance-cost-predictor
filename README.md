@@ -101,8 +101,6 @@ pip install -r requirements.txt
 
 | Metric | Description |
 |--------|-------------|
-| MAE    | Mean Absolute Error |
-| RMSE   | Root Mean Squared Error |
 | R²     | Coefficient of Determination |
 
 ---
@@ -122,13 +120,7 @@ pip install -r requirements.txt
 - Build a simple frontend for user input and cost prediction
 - Experiment with Neural Networks for improved accuracy
 
----
 
-## 📄 License
-
-This project is licensed under the [MIT License](LICENSE).
-
----
 
 ## 👤 Author
 
