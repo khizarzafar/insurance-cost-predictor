@@ -1,17 +1,10 @@
-# Core ML & Data
-scikit-learn==1.4.2
-pandas==2.2.2
-numpy==1.26.4
-joblib==1.4.2
-
-# API Framework
-fastapi==0.111.0
-uvicorn[standard]==0.30.1    # ASGI server that runs FastAPI
-pydantic==2.7.1               # Data validation (used by FastAPI)
-
-# Frontend (for Step 4)
-streamlit==1.35.0
-requests==2.32.3              # Streamlit uses this to call our FastAPI
-
-# Deployment (for Step 5)
-# docker is installed at the system level, not via pip
+fastapi==0.138.1
+joblib==1.5.3
+numpy==2.5.0
+pandas==3.0.3
+pydantic==2.13.4
+requests==2.34.2
+scikit-learn==1.8.0
+uvicorn[standard]==0.49.0
+streamlit==1.58.0
+ 
