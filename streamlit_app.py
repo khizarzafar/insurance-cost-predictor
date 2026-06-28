@@ -13,8 +13,14 @@ Make sure your FastAPI server is also running in a separate terminal:
     python -m uvicorn app.main:app --reload
 """
 
+import os
+
 import requests
 import streamlit as st
+
+# API_URL can be set as an environment variable (used in Docker / Hugging Face)
+# Falls back to localhost for local development
+API_URL = os.getenv("API_URL", "http://127.0.0.1:8000")
 
 # ─────────────────────────────────────────────
 # 1.  Page Configuration
@@ -222,7 +228,7 @@ if submitted:
             # Send POST request to the FastAPI backend
             # timeout=10 means: if the server doesn't respond in 10 seconds, give up
             response = requests.post(
-                url="http://127.0.0.1:8000/predict",
+                url=f"{API_URL}/predict",
                 json=payload,
                 timeout=10,
             )

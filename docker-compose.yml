@@ -1,0 +1,54 @@
+# ============================================================
+# docker-compose.yml — Local Development Setup
+# ============================================================
+# docker-compose lets you define and run MULTIPLE containers
+# together as a single application.
+#
+# For local development, we split into 2 services:
+#   - api:      FastAPI backend  → http://localhost:8000
+#   - frontend: Streamlit UI     → http://localhost:8501
+#
+# Commands:
+#   Start:   docker-compose up --build
+#   Stop:    docker-compose down
+#   Logs:    docker-compose logs -f
+# ============================================================
+
+version: "3.9"
+
+services:
+
+  # ── Service 1: FastAPI Backend ──────────────────────────────
+  api:
+    build: .                          # build from the Dockerfile in current folder
+    container_name: insurance-api
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    ports:
+      - "8000:8000"                   # host_port:container_port
+    volumes:
+      - .:/app                        # mount current folder into container
+                                      # this means code changes reflect instantly
+    environment:
+      - PYTHONUNBUFFERED=1            # print logs immediately (no buffering)
+
+  # ── Service 2: Streamlit Frontend ──────────────────────────
+  frontend:
+    build: .
+    container_name: insurance-frontend
+    command: >
+      streamlit run streamlit_app.py
+      --server.port 8501
+      --server.address 0.0.0.0
+      --server.headless true
+    ports:
+      - "8501:8501"
+    volumes:
+      - .:/app
+    environment:
+      - PYTHONUNBUFFERED=1
+      # Tell Streamlit to call the API container by its service name
+      # Docker Compose creates an internal network where services can
+      # reach each other by their service name (e.g. "api")
+      - API_URL=http://api:8000
+    depends_on:
+      - api                           # start the api container first
