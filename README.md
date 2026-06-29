@@ -1,3 +1,14 @@
+---
+title: Insurance Cost Predictor
+emoji: 🏥
+colorFrom: blue
+colorTo: green
+sdk: docker
+pinned: false
+app_port: 7860
+---
+
+
 # 🏥 Insurance Cost Predictor
 
 A full-stack ML web application that predicts individual medical insurance charges based on personal attributes. Built with FastAPI, Streamlit, and Docker — deployed on Hugging Face Spaces.
@@ -6,7 +17,7 @@ A full-stack ML web application that predicts individual medical insurance charg
 
 ## 🚀 Live Demo
 
-👉 [Try it on Hugging Face Spaces](#) *(link will be updated after deployment)*
+👉 [(https://huggingface.co/spaces/khizarzafar19/insurance-cost-predictor)]
 
 ---
 
