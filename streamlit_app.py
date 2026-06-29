@@ -310,7 +310,7 @@ if submitted:
 st.divider()
 st.markdown(
     "<div style='text-align:center; color:#aaa; font-size:12px;'>"
-    "Built with FastAPI + Streamlit · Linear Regression model trained on insurance.csv"
+    "Built with FastAPI + Streamlit · Linear Regression model"
     "</div>",
     unsafe_allow_html=True,
 )
