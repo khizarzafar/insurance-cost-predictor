@@ -1,0 +1,26 @@
+# Python cache files — auto-generated, never needed on GitHub
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Virtual environment folders
+venv/
+env/
+.env/
+
+# Environment variable files (contains secrets — never push these)
+.env
+
+# Jupyter notebook checkpoints
+.ipynb_checkpoints/
+
+# Model files are already pushed intentionally, so we keep them
+# But ignore any temp model files
+*.tmp
+
+# OS junk files
+.DS_Store
+Thumbs.db
+
+# VS Code settings
+.vscode/

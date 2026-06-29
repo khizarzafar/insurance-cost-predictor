@@ -1,114 +1,176 @@
-# Insurance Charges Prediction — EDA & Linear Regression
+# 🏥 Insurance Cost Predictor
 
-A machine learning project that analyzes an insurance dataset to understand what factors drive medical charges, and builds a regression model to predict them.
-
----
-
-## What This Project Does
-
-The notebook walks through the full pipeline — from raw data to a working prediction model:
-
-- Exploratory data analysis to understand the data and spot patterns
-- Data cleaning and preprocessing (encoding, deduplication, type fixes)
-- Feature engineering (BMI categories, one-hot encoding)
-- Feature selection using Pearson Correlation and Chi-Square tests
-- Training a Linear Regression model and evaluating it with R² and Adjusted R²
+A full-stack ML web application that predicts individual medical insurance charges based on personal attributes. Built with FastAPI, Streamlit, and Docker — deployed on Hugging Face Spaces.
 
 ---
 
-## Dataset
+## 🚀 Live Demo
 
-**File:** `insurance.csv`
-
-| Column | Description |
-|--------|-------------|
-| `age` | Age of the insured person |
-| `sex` | Gender (male / female) |
-| `bmi` | Body Mass Index |
-| `children` | Number of dependents |
-| `smoker` | Whether the person smokes (yes / no) |
-| `region` | Residential region in the US |
-| `charges` | Medical insurance charges (target variable) |
+👉 [Try it on Hugging Face Spaces](#) *(link will be updated after deployment)*
 
 ---
 
-## Project Structure
+## 🧠 What This Project Does
+
+Given a person's details, the app predicts how much they are likely to be charged for medical insurance.
+
+**Input Features:**
+
+| Feature | Description |
+|---|---|
+| Age | Age of the insured person |
+| BMI | Body Mass Index |
+| Children | Number of dependents |
+| Smoker | Whether the person smokes (yes / no) |
+| Region | Residential region in the US |
+
+**Output:** Predicted insurance charges in USD 💵
+
+---
+
+## 🏗️ Project Structure
 
 ```
-├── EDA.ipynb          # Main notebook
-├── insurance.csv      # Dataset
+insurance-cost-predictor/
+├── app/
+│   ├── __init__.py
+│   └── main.py              ← FastAPI backend with /predict endpoint
+├── streamlit_app.py         ← Streamlit frontend UI
+├── model.pkl                ← Trained Linear Regression model
+├── scaler.pkl               ← StandardScaler for feature normalization
+├── training_model.ipynb     ← Full model training notebook (EDA + ML)
+├── retrain.py               ← Script to retrain the model from scratch
+├── insurance.csv            ← Dataset (1338 records)
+├── requirements.txt         ← All Python dependencies
+├── Dockerfile               ← Container build instructions
+├── docker-compose.yml       ← Runs FastAPI + Streamlit together
+├── start.sh                 ← Startup script for containers
 └── README.md
 ```
 
 ---
 
-## Steps Covered in the Notebook
+## ⚙️ Tech Stack
 
-**1. EDA**
-- Checked shape, data types, null values
-- Plotted distributions for age, bmi, children, charges
-- Visualized categorical columns (sex, smoker)
-- Correlation heatmap
-
-**2. Data Cleaning**
-- Removed duplicate rows
-- Encoded `sex` → `is_female` (0/1)
-- Encoded `smoker` → `is_smoker` (0/1)
-- One-hot encoded `region` (dropped first to avoid multicollinearity)
-
-**3. Feature Engineering**
-- Created `bmi_category` from BMI values (underweight / normal / overweight / obese)
-- One-hot encoded `bmi_category`
-- Standardized numeric features: `age`, `bmi`, `children`
-
-**4. Feature Selection**
-- Pearson Correlation for numeric features vs charges
-- Chi-Square test for categorical features vs binned charges
-- Final features selected: `age`, `is_female`, `bmi`, `children`, `is_smoker`, `region_southeast`, `bmi_category_obese`
-
-**5. Model Training**
-- 80/20 train-test split
-- Linear Regression from scikit-learn
-- Evaluated using R² and Adjusted R²
+| Layer | Technology |
+|---|---|
+| ML Model | Scikit-learn (Linear Regression) |
+| Backend API | FastAPI + Uvicorn |
+| Frontend UI | Streamlit |
+| Containerization | Docker + Docker Compose |
+| Deployment | Hugging Face Spaces |
 
 ---
 
-## How to Run
+## 🐳 Run Locally with Docker
 
-1. Clone the repo and make sure `insurance.csv` is in the same folder as the notebook
+Make sure **Docker Desktop is running**, then:
 
-2. Install dependencies:
 ```bash
-pip install pandas numpy matplotlib seaborn scikit-learn scipy
+# Clone the repo
+git clone https://github.com/khizarzafar/insurance-cost-predictor.git
+cd insurance-cost-predictor
+
+# Build and run everything with one command
+docker-compose up --build
 ```
 
-3. Open and run the notebook:
+Then open your browser:
+
+- 🌐 **Streamlit UI** → http://localhost:8501
+- 📄 **FastAPI Docs** → http://localhost:8000/docs
+
+To stop all containers:
+
 ```bash
-jupyter notebook EDA.ipynb
+docker-compose down
 ```
 
 ---
 
-## Results
+## 🧪 Run Without Docker
 
-The model was evaluated on the held-out test set (20% of data) using:
+```bash
+# Install dependencies
+pip install -r requirements.txt
 
-- **R² Score** — measures how much variance in charges the model explains
-- **Adjusted R²** — penalizes for adding unhelpful features, more reliable than plain R²
+# Terminal 1 — Start FastAPI backend
+uvicorn app.main:app --reload --port 8000
 
----
-
-## Libraries Used
-
-- `pandas`, `numpy` — data manipulation
-- `matplotlib`, `seaborn` — visualization
-- `scikit-learn` — preprocessing, model training, evaluation
-- `scipy` — statistical tests (Pearson, Chi-Square)
+# Terminal 2 — Start Streamlit frontend
+streamlit run streamlit_app.py
+```
 
 ---
 
-## Notes
+## 📡 API Reference
 
-- The `charges` column was binned into quartiles only for the Chi-Square test and is not used as a feature in the model
-- `StandardScaler` was fit only on training data to avoid data leakage
-- `drop_first=True` was used in all one-hot encoding to avoid the dummy variable trap
+**Endpoint:** `POST /predict`
+
+**Request body (JSON):**
+```json
+{
+  "age": 30,
+  "bmi": 27.5,
+  "children": 2,
+  "smoker": "yes",
+  "region": "southeast"
+}
+```
+
+**Response:**
+```json
+{
+  "predicted_charges": 18452.73
+}
+```
+
+You can test it interactively at `http://localhost:8000/docs` using the built-in Swagger UI.
+
+---
+
+## 📊 Model Details
+
+- **Algorithm:** Linear Regression
+- **Training data:** `insurance.csv` (1,338 records)
+- **Target variable:** `charges` (medical insurance cost in USD)
+- **Key predictors:** Smoker status (strongest), Age, BMI
+- **Preprocessing:** StandardScaler for numeric features, One-hot encoding for categoricals
+- **Evaluation metrics:** R² Score and Adjusted R²
+
+---
+
+## 📓 Training Notebook
+
+The `training_model.ipynb` notebook covers the full pipeline:
+
+1. **EDA** — distributions, correlations, visualizations
+2. **Data Cleaning** — duplicates, encoding, type fixes
+3. **Feature Engineering** — BMI categories, one-hot encoding
+4. **Feature Selection** — Pearson Correlation + Chi-Square tests
+5. **Model Training** — 80/20 split, Linear Regression
+6. **Evaluation** — R² and Adjusted R² on test set
+
+---
+
+## 📦 Dataset
+
+**File:** `insurance.csv`
+
+| Column | Type | Description |
+|---|---|---|
+| `age` | int | Age of insured person |
+| `sex` | string | Gender (male / female) |
+| `bmi` | float | Body Mass Index |
+| `children` | int | Number of dependents |
+| `smoker` | string | Smoking status (yes / no) |
+| `region` | string | US region (northeast / northwest / southeast / southwest) |
+| `charges` | float | Medical insurance charges — **target variable** |
+
+---
+
+## 👤 Author
+
+**Khizar Zafar**
+BSAI Student — Air University, Islamabad
+[GitHub](https://github.com/khizarzafar)
